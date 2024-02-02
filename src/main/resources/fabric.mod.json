@@ -8,7 +8,8 @@
     "Maxmani"
   ],
   "contributors": [
-    "wasa"
+    "wasa",
+    "yumio"
   ],
   "contact": {
     "sources": "https://github.com/Maxmani/voile",
@@ -30,7 +31,7 @@
     }
   ],
   "depends": {
-    "fabricloader": ">=0.14",
+    "fabricloader": ">=0.15",
     "minecraft": "~1.20",
     "java": ">=17",
     "fabric-api": "*",

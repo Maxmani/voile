@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.4-SNAPSHOT'
+	id 'fabric-loom' version '1.5-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -20,21 +20,24 @@ repositories {
 		url = 'https://maven.ladysnake.org/releases'
 	}
 	maven {
-		url "https://maven.shedaniel.me/"
+		url = "https://maven.shedaniel.me/"
 	}
 	maven {
-		url "https://maven.terraformersmc.com/"
+		url = "https://maven.terraformersmc.com/"
 	}
 	maven {
 		name = "Jamie's White Shirt"
-		url "https://maven.jamieswhiteshirt.com/libs-release"
+		url = "https://maven.jamieswhiteshirt.com/libs-release"
 	}
 	maven {
 		name = "Modrinth"
 		url = "https://api.modrinth.com/maven"
 	}
 	maven {
-		url 'https://jitpack.io'
+		url = "https://masa.dy.fi/maven"
+	}
+	maven {
+		url = 'https://jitpack.io'
 	}
 }
 
@@ -94,9 +97,6 @@ dependencies {
 	modApi("com.github.Virtuoel:Pehkui:${project.pehkui_version}", {
 		exclude group: "net.fabricmc.fabric-api"
 	})
-
-	// MixinExtras
-	include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${project.mixinextras_version}")))
 
 	// Origins (for test mod)
 	modLocalRuntime "com.github.apace100:origins-fabric:${project.origins_version}"
