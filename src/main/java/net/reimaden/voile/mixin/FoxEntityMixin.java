@@ -1,6 +1,6 @@
 /*
  * This file is part of Voile, a library mod for Minecraft.
- * Copyright (C) 2023  Maxmani
+ * Copyright (C) 2023-2024  Maxmani
  *
  * Voile is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -49,7 +49,7 @@ public abstract class FoxEntityMixin extends AnimalEntity implements VariantHold
     private void voile$markPlayerAsTarget(CallbackInfo ci) {
         this.targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, false, livingEntity -> {
             // Make sure the player isn't trusted
-            if (this.getTrustedUuids().stream().anyMatch(uuid -> uuid != null && uuid.equals(livingEntity.getUuid()))) {
+            if (this.getTrustedUuids().contains(livingEntity.getUuid())) {
                 return false;
             }
 

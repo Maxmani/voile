@@ -1,6 +1,6 @@
 /*
  * This file is part of Voile, a library mod for Minecraft.
- * Copyright (C) 2023  Maxmani
+ * Copyright (C) 2023-2024  Maxmani
  *
  * Voile is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -86,14 +86,6 @@ public class BehaviorHelper {
      */
     public boolean neitherNeutralNorPassive() {
         return !this.behaviorMatches(ModifyBehaviorPower.EntityBehavior.NEUTRAL) && !this.behaviorMatches(ModifyBehaviorPower.EntityBehavior.PASSIVE);
-    }
-
-    /**
-     * Checks if the Modify Behavior power's desired behavior is not hostile or passive, but also isn't explicitly neutral.
-     * @return True if neither hostile nor passive is set.
-     */
-    public boolean neitherHostileNorPassive() {
-        return !this.behaviorMatches(ModifyBehaviorPower.EntityBehavior.HOSTILE) && !this.behaviorMatches(ModifyBehaviorPower.EntityBehavior.PASSIVE);
     }
 
     /**

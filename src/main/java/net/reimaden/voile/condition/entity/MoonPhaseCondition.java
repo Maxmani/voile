@@ -1,6 +1,6 @@
 /*
  * This file is part of Voile, a library mod for Minecraft.
- * Copyright (C) 2023-2024  Maxmani
+ * Copyright (C) 2024  Maxmani
  *
  * Voile is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,35 +16,29 @@
  * along with Voile.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.reimaden.voile.power;
+package net.reimaden.voile.condition.entity;
 
-import io.github.apace100.apoli.power.Power;
-import io.github.apace100.apoli.power.PowerType;
-import io.github.apace100.apoli.power.factory.PowerFactory;
+import io.github.apace100.apoli.data.ApoliDataTypes;
+import io.github.apace100.apoli.power.factory.condition.ConditionFactory;
+import io.github.apace100.apoli.util.Comparison;
 import io.github.apace100.calio.data.SerializableData;
 import io.github.apace100.calio.data.SerializableDataTypes;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Entity;
 import net.reimaden.voile.Voile;
 
-public class FlipModelPower extends Power {
+public class MoonPhaseCondition {
 
-    private final boolean flipView;
-
-    public FlipModelPower(PowerType<?> type, LivingEntity entity, boolean flipView) {
-        super(type, entity);
-        this.flipView = flipView;
+    public static boolean condition(SerializableData.Instance data, Entity entity) {
+        return data.<Comparison>get("comparison").compare(entity.getWorld().getMoonPhase(), data.getInt("compare_to"));
     }
 
-    public boolean shouldFlipView() {
-        return this.flipView;
-    }
-
-    public static PowerFactory<Power> createFactory() {
-        return new PowerFactory<>(
-                Voile.id("flip_model"),
+    public static ConditionFactory<Entity> getFactory() {
+        return new ConditionFactory<>(
+                Voile.id("moon_phase"),
                 new SerializableData()
-                        .add("flip_view", SerializableDataTypes.BOOLEAN, false),
-                data -> (type, entity) -> new FlipModelPower(type, entity, data.getBoolean("flip_view"))
-        ).allowCondition();
+                        .add("comparison", ApoliDataTypes.COMPARISON)
+                        .add("compare_to", SerializableDataTypes.INT),
+                MoonPhaseCondition::condition
+        );
     }
 }

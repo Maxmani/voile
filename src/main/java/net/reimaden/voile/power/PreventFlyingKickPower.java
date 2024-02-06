@@ -25,17 +25,17 @@ import io.github.apace100.calio.data.SerializableData;
 import net.minecraft.entity.LivingEntity;
 import net.reimaden.voile.Voile;
 
-public class WaterBreathingPower extends Power {
+public class PreventFlyingKickPower extends Power {
 
-    public WaterBreathingPower(PowerType<?> type, LivingEntity entity) {
+    public PreventFlyingKickPower(PowerType<?> type, LivingEntity entity) {
         super(type, entity);
     }
 
     public static PowerFactory<Power> createFactory() {
         return new PowerFactory<>(
-                Voile.id("water_breathing"),
+                Voile.id("prevent_flying_kick"),
                 new SerializableData(),
-                data -> (type, entity) -> new WaterBreathingPower(type, entity)
+                data -> (type, entity) -> new PreventFlyingKickPower(type, entity)
         ).allowCondition();
     }
 }

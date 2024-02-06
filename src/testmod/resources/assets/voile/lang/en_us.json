@@ -53,5 +53,11 @@
   "power.voile.nearby_boats.name": "Nearby Entities Example",
   "power.voile.nearby_boats.description": "You heal when near boats.",
   "power.voile.random_negative_effect.name": "Apply Random Effect Example",
-  "power.voile.random_negative_effect.description": "You get a random negative status effect every time you take fall damage."
+  "power.voile.random_negative_effect.description": "You get a random negative status effect every time you take fall damage.",
+  "power.voile.cant_tame_cats.name": "Prevent Taming Example",
+  "power.voile.cant_tame_cats.description": "You can't tame cats.",
+  "power.voile.store_uuid.name": "Store Data Example",
+  "power.voile.store_uuid.description": "Stores the first of the four integers of your target's UUID in a scoreboard.",
+  "power.voile.compare_deaths.name": "Scoreboard Example",
+  "power.voile.compare_deaths.description": "Compares your score in the \"deaths\" objective to nearby entities', and deals damage if they're equal."
 }

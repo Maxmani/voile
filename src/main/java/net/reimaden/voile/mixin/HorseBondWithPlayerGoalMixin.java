@@ -1,6 +1,6 @@
 /*
  * This file is part of Voile, a library mod for Minecraft.
- * Copyright (C) 2023-2024  Maxmani
+ * Copyright (C) 2024  Maxmani
  *
  * Voile is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,30 +18,22 @@
 
 package net.reimaden.voile.mixin;
 
-import net.minecraft.entity.ai.goal.EscapeDangerGoal;
-import net.minecraft.entity.mob.PathAwareEntity;
-import net.reimaden.voile.power.ModifyBehaviorPower;
-import net.reimaden.voile.util.BehaviorHelper;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import net.minecraft.entity.ai.goal.HorseBondWithPlayerGoal;
+import net.minecraft.entity.passive.AbstractHorseEntity;
+import net.reimaden.voile.util.TameUtil;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(EscapeDangerGoal.class)
-public class EscapeDangerGoalMixin {
+@Mixin(HorseBondWithPlayerGoal.class)
+public class HorseBondWithPlayerGoalMixin {
 
-    @Shadow @Final protected PathAwareEntity mob;
+    @Shadow @Final private AbstractHorseEntity horse;
 
-    @Inject(method = "isInDanger", at = @At("HEAD"), cancellable = true)
-    private void voile$preventEscaping(CallbackInfoReturnable<Boolean> cir) {
-        BehaviorHelper behaviorHelper = new BehaviorHelper(this.mob.getAttacker(), this.mob);
-
-        if (behaviorHelper.checkEntity()) {
-            if (behaviorHelper.behaviorMatches(ModifyBehaviorPower.EntityBehavior.PASSIVE)) {
-                cir.setReturnValue(false);
-            }
-        }
+    @ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/random/Random;nextInt(I)I", ordinal = 1))
+    private int voile$preventTaming(int original) {
+        return TameUtil.preventTamingHorse(original, this.horse, this.horse.getTemper());
     }
 }

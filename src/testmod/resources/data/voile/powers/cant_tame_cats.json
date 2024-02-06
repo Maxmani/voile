@@ -1,0 +1,17 @@
+{
+  "type": "voile:prevent_taming",
+  "bientity_condition": {
+    "type": "apoli:target_condition",
+    "condition": {
+      "type": "apoli:entity_type",
+      "entity_type": "minecraft:cat"
+    }
+  },
+  "bientity_action": {
+    "type": "apoli:actor_action",
+    "action": {
+      "type": "apoli:execute_command",
+      "command": "title @s actionbar \"Taming failed!\""
+    }
+  }
+}

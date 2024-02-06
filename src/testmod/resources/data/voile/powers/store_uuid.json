@@ -1,0 +1,15 @@
+{
+  "type": "apoli:action_on_hit",
+  "bientity_action": {
+    "type": "voile:store_data",
+    "path": "UUID[0]",
+    "objective": "UUID_1"
+  },
+  "bientity_condition": {
+    "type": "apoli:target_condition",
+    "condition": {
+      "type": "apoli:entity_type",
+      "entity_type": "minecraft:player"
+    }
+  }
+}

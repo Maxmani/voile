@@ -18,53 +18,36 @@
 
 package net.reimaden.voile.action;
 
-import io.github.apace100.apoli.data.ApoliDataTypes;
 import io.github.apace100.apoli.power.factory.action.ActionFactory;
 import io.github.apace100.apoli.registry.ApoliRegistries;
-import io.github.apace100.apoli.util.ResourceOperation;
-import io.github.apace100.calio.data.SerializableData;
-import io.github.apace100.calio.data.SerializableDataType;
-import io.github.apace100.calio.data.SerializableDataTypes;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.registry.Registry;
+import net.minecraft.util.Pair;
 import net.reimaden.voile.Voile;
+import net.reimaden.voile.action.bientity.StoreDataAction;
+import net.reimaden.voile.action.entity.ApplyRandomEffectAction;
+import net.reimaden.voile.action.entity.ChangeResourceWithStatusEffectsAction;
+import net.reimaden.voile.action.entity.DisableShieldAction;
 
-@SuppressWarnings("unused")
 public class VoileActions {
 
-    public static final ActionFactory<Entity> CHANGE_RESOURCE_WITH_STATUS_EFFECTS = registerEntityAction(new ActionFactory<>(Voile.id("change_resource_with_status_effects"), new SerializableData()
-            .add("resource", ApoliDataTypes.POWER_TYPE)
-            .add("category", SerializableDataType.enumValue(StatusEffectCategory.class))
-            .add("change", SerializableDataTypes.INT, 1)
-            .add("operation", ApoliDataTypes.RESOURCE_OPERATION, ResourceOperation.ADD),
-            ChangeResourceWithStatusEffectsAction::action)
-    );
-    public static final ActionFactory<Entity> DISABLE_SHIELD = registerEntityAction(new ActionFactory<>(Voile.id("disable_shield"), new SerializableData(),
-            DisableShieldAction::action)
-    );
-    public static final ActionFactory<Entity> APPLY_RANDOM_EFFECT = registerEntityAction(new ActionFactory<>(Voile.id("apply_random_effect"), new SerializableData()
-            .add("category", SerializableDataType.enumValue(StatusEffectCategory.class), null)
-            .add("duration", SerializableDataTypes.INT, 100)
-            .add("amplifier", SerializableDataTypes.INT, 0)
-            .add("is_ambient", SerializableDataTypes.BOOLEAN, false)
-            .add("show_particles", SerializableDataTypes.BOOLEAN, true)
-            .add("show_icon", SerializableDataTypes.BOOLEAN, true)
-            .add("filtered_effects", SerializableDataType.list(SerializableDataTypes.STATUS_EFFECT), null),
-            ApplyRandomEffectAction::action)
-    );
-
-    private static ActionFactory<Entity> registerEntityAction(ActionFactory<Entity> factory) {
-        return Registry.register(ApoliRegistries.ENTITY_ACTION, factory.getSerializerId(), factory);
-    }
-
-    /* noinspection
-    private static ActionFactory<Pair<Entity, Entity>> registerBiEntityAction(ActionFactory<Pair<Entity, Entity>> factory) {
-        return Registry.register(ApoliRegistries.BIENTITY_ACTION, factory.getSerializerId(), factory);
-    }
-     */
-
     public static void register() {
-        Voile.LOGGER.debug("Registering actions for " + Voile.MOD_ID);
+        Voile.LOGGER.debug("Registering action types for " + Voile.MOD_ID);
+
+        // Entity Actions
+        registerEntityAction(ChangeResourceWithStatusEffectsAction.getFactory());
+        registerEntityAction(DisableShieldAction.getFactory());
+        registerEntityAction(ApplyRandomEffectAction.getFactory());
+
+        // Bi-Entity Actions
+        registerBiEntityAction(StoreDataAction.getFactory());
+    }
+
+    private static void registerEntityAction(ActionFactory<Entity> factory) {
+        Registry.register(ApoliRegistries.ENTITY_ACTION, factory.getSerializerId(), factory);
+    }
+
+    private static void registerBiEntityAction(ActionFactory<Pair<Entity, Entity>> factory) {
+        Registry.register(ApoliRegistries.BIENTITY_ACTION, factory.getSerializerId(), factory);
     }
 }

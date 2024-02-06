@@ -18,96 +18,43 @@
 
 package net.reimaden.voile.power;
 
-import io.github.apace100.apoli.data.ApoliDataTypes;
-import io.github.apace100.apoli.power.Power;
 import io.github.apace100.apoli.power.factory.PowerFactory;
+import io.github.apace100.apoli.power.factory.PowerFactorySupplier;
 import io.github.apace100.apoli.registry.ApoliRegistries;
-import io.github.apace100.apoli.util.HudRender;
-import io.github.apace100.calio.data.SerializableData;
-import io.github.apace100.calio.data.SerializableDataType;
-import io.github.apace100.calio.data.SerializableDataTypes;
 import net.minecraft.registry.Registry;
 import net.reimaden.voile.Voile;
 
-@SuppressWarnings("unused")
 public class VoilePowers {
 
-    public static final PowerFactory<Power> ZOMBIE_ARMS = registerPower(new PowerFactory<>(Voile.id("zombie_arms"), new SerializableData(),
-            data -> ZombieArmsPower::new))
-            .allowCondition();
-    public static final PowerFactory<Power> MODIFY_BEHAVIOR = registerPower(new PowerFactory<>(Voile.id("modify_behavior"), new SerializableData()
-            .add("behavior", SerializableDataType.enumValue(ModifyBehaviorPower.EntityBehavior.class))
-            .add("entity_condition", ApoliDataTypes.ENTITY_CONDITION, null)
-            .add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null),
-            data -> (type, entity) -> new ModifyBehaviorPower(type, entity, data.get("behavior"), data.get("entity_condition"), data.get("bientity_condition")))
-            .allowCondition());
-    public static final PowerFactory<Power> FLIP_MODEL = registerPower(new PowerFactory<>(Voile.id("flip_model"), new SerializableData(),
-            data -> FlipModelPower::new))
-            .allowCondition();
-    public static final PowerFactory<Power> MODIFY_SCALE = registerPower(new PowerFactory<>(Voile.id("modify_scale"), new SerializableData()
-            .add("scale_types", SerializableDataTypes.IDENTIFIERS, ModifyScalePower.DEFAULT_SCALE_TYPES)
-            .add("scale", SerializableDataTypes.FLOAT),
-            data -> (type, entity) -> new ModifyScalePower(type, entity, data.get("scale_types"), data.getFloat("scale")))
-            .allowCondition());
-    public static final PowerFactory<Power> MODIFY_FOOTSTEP_SOUND = registerPower(new PowerFactory<>(Voile.id("modify_footstep_sound"), ModifySoundPower.getSerializableData(),
-            data -> (type, entity) -> new ModifyFootstepSoundPower(type, entity, data)).allowCondition());
-    public static final PowerFactory<Power> MODIFY_HURT_SOUND = registerPower(new PowerFactory<>(Voile.id("modify_hurt_sound"), ModifySoundPower.getSerializableData(),
-            data -> (type, entity) -> new ModifyHurtSoundPower(type, entity, data)).allowCondition());
-    public static final PowerFactory<Power> MODIFY_DEATH_SOUND = registerPower(new PowerFactory<>(Voile.id("modify_death_sound"), ModifySoundPower.getSerializableData(),
-            data -> (type, entity) -> new ModifyDeathSoundPower(type, entity, data)).allowCondition());
-    public static final PowerFactory<Power> ENCHANTMENT_VULNERABILITY = registerPower(new PowerFactory<>(Voile.id("enchantment_vulnerability"), new SerializableData()
-            .add("enchantment", SerializableDataTypes.ENCHANTMENT, null)
-            .add("enchantments", SerializableDataType.list(SerializableDataTypes.ENCHANTMENT), null),
-            data -> (type, entity) -> new EnchantmentVulnerabilityPower(type, entity, data))
-            .allowCondition());
-    public static final PowerFactory<Power> REVERSE_INSTANT_EFFECTS = registerPower(new PowerFactory<>(Voile.id("reverse_instant_effects"), new SerializableData(),
-            data -> ReverseInstantEffectsPower::new))
-            .allowCondition();
-    public static final PowerFactory<Power> INSTANT_EFFECT_IMMUNITY = registerPower(new PowerFactory<>(Voile.id("instant_effect_immunity"), new SerializableData()
-            .add("effect", SerializableDataTypes.STATUS_EFFECT, null)
-            .add("effects", SerializableDataTypes.STATUS_EFFECTS, null)
-            .add("inverted", SerializableDataTypes.BOOLEAN, false),
-            data -> (type, entity) -> new InstantEffectImmunityPower(type, entity, data))
-            .allowCondition());
-    public static final PowerFactory<Power> CONVERT_ENTITY = registerPower(new PowerFactory<>(Voile.id("convert_entity"), new SerializableData()
-            .add("entity_condition", ApoliDataTypes.ENTITY_CONDITION, null)
-            .add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
-            .add("convert_to", SerializableDataTypes.ENTITY_TYPE)
-            .add("ignore_difficulty", SerializableDataTypes.BOOLEAN, true),
-            data -> (type, entity) -> new ConvertEntityPower(type, entity, data.get("entity_condition"), data.get("bientity_condition"), data.get("convert_to"), data.getBoolean("ignore_difficulty")))
-            .allowCondition());
-    public static final PowerFactory<Power> MODIFY_DIVERGENCE = registerPower(new PowerFactory<>(Voile.id("modify_divergence"), new SerializableData()
-            .add("divergence", SerializableDataTypes.FLOAT),
-            data -> (type, entity) -> new ModifyDivergencePower(type, entity, data.getFloat("divergence")))
-            .allowCondition());
-    public static final PowerFactory<Power> PREVENT_SPRINTING_PARTICLES = registerPower(new PowerFactory<>(Voile.id("prevent_sprinting_particles"), new SerializableData(),
-            data -> PreventSprintingParticlesPower::new))
-            .allowCondition();
-    public static final PowerFactory<Power> DISABLE_SHIELDS = registerPower(new PowerFactory<>(Voile.id("disable_shields"), new SerializableData(),
-            data -> DisableShieldsPower::new))
-            .allowCondition();
-    public static final PowerFactory<Power> ACTION_ON_BLOCK = registerPower(new PowerFactory<>(Voile.id("action_on_block"), new SerializableData()
-            .add("bientity_action", ApoliDataTypes.BIENTITY_ACTION)
-            .add("damage_condition", ApoliDataTypes.DAMAGE_CONDITION, null)
-            .add("cooldown", SerializableDataTypes.INT, 1)
-            .add("hud_render", ApoliDataTypes.HUD_RENDER, HudRender.DONT_RENDER)
-            .add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null),
-            data -> (type, entity) -> new ActionOnBlockPower(type, entity, data.getInt("cooldown"), data.get("hud_render"), data.get("damage_condition"), data.get("bientity_action"), data.get("bientity_condition")))
-            .allowCondition());
-    public static final PowerFactory<Power> PREVENT_ITEM_SLOWDOWN = registerPower(new PowerFactory<>(Voile.id("prevent_item_slowdown"), new SerializableData()
-            .add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
-            .add("can_start_sprinting", SerializableDataTypes.BOOLEAN, true),
-            data -> (type, entity) -> new PreventItemSlowdownPower(type, entity, data.get("item_condition"), data.getBoolean("can_start_sprinting")))
-            .allowCondition());
-    public static final PowerFactory<Power> WATER_BREATHING = registerPower(new PowerFactory<>(Voile.id("water_breathing"), new SerializableData(),
-            data -> WaterBreathingPower::new))
-            .allowCondition();
+    public static void register() {
+        Voile.LOGGER.debug("Registering power types for " + Voile.MOD_ID);
 
-    private static PowerFactory<Power> registerPower(PowerFactory<Power> factory) {
-        return Registry.register(ApoliRegistries.POWER_FACTORY, factory.getSerializerId(), factory);
+        registerPower(ZombieArmsPower::createFactory);
+        registerPower(ModifyBehaviorPower::createFactory);
+        registerPower(FlipModelPower::createFactory);
+        registerPower(ModifyScalePower::createFactory);
+        registerPower(ModifyFootstepSoundPower::createFactory);
+        registerPower(ModifyHurtSoundPower::createFactory);
+        registerPower(ModifyDeathSoundPower::createFactory);
+        registerPower(EnchantmentVulnerabilityPower::createFactory);
+        registerPower(ReverseInstantEffectsPower::createFactory);
+        registerPower(InstantEffectImmunityPower::createFactory);
+        registerPower(ConvertEntityPower::createFactory);
+        registerPower(ModifyDivergencePower::createFactory);
+        registerPower(PreventSprintingParticlesPower::createFactory);
+        registerPower(DisableShieldsPower::createFactory);
+        registerPower(ActionOnBlockPower::createFactory);
+        registerPower(PreventItemSlowdownPower::createFactory);
+        registerPower(WaterBreathingPower::createFactory);
+        registerPower(PreventTamingPower::createFactory);
+        registerPower(PreventFlyingKickPower::createFactory);
     }
 
-    public static void register() {
-        Voile.LOGGER.debug("Registering powers for " + Voile.MOD_ID);
+    private static void registerPower(PowerFactory<?> factory) {
+        Registry.register(ApoliRegistries.POWER_FACTORY, factory.getSerializerId(), factory);
+    }
+
+    private static void registerPower(PowerFactorySupplier<?> factorySupplier) {
+        registerPower(factorySupplier.createFactory());
     }
 }

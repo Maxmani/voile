@@ -1,3 +1,4 @@
 {
-  "type": "voile:flip_model"
+  "type": "voile:flip_model",
+  "flip_view": true
 }

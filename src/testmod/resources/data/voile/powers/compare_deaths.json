@@ -1,0 +1,20 @@
+{
+  "type": "apoli:action_over_time",
+  "entity_action": {
+    "type": "apoli:area_of_effect",
+    "bientity_action": {
+      "type": "apoli:target_action",
+      "action": {
+        "type": "apoli:damage",
+        "amount": 4,
+        "damage_type": "minecraft:on_fire"
+      }
+    },
+    "bientity_condition": {
+      "type": "voile:scoreboard",
+      "actor_objective": "deaths",
+      "target_objective": "deaths",
+      "comparison": "=="
+    }
+  }
+}

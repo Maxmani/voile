@@ -18,13 +18,19 @@
 
 package net.reimaden.voile.power;
 
+import io.github.apace100.apoli.data.ApoliDataTypes;
 import io.github.apace100.apoli.power.CooldownPower;
+import io.github.apace100.apoli.power.Power;
 import io.github.apace100.apoli.power.PowerType;
+import io.github.apace100.apoli.power.factory.PowerFactory;
 import io.github.apace100.apoli.util.HudRender;
+import io.github.apace100.calio.data.SerializableData;
+import io.github.apace100.calio.data.SerializableDataTypes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.util.Pair;
+import net.reimaden.voile.Voile;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -53,5 +59,18 @@ public class ActionOnBlockPower extends CooldownPower {
                 }
             }
         }
+    }
+
+    public static PowerFactory<Power> createFactory() {
+        return new PowerFactory<>(
+                Voile.id("action_on_block"),
+                new SerializableData()
+                        .add("bientity_action", ApoliDataTypes.BIENTITY_ACTION)
+                        .add("damage_condition", ApoliDataTypes.DAMAGE_CONDITION, null)
+                        .add("cooldown", SerializableDataTypes.INT, 1)
+                        .add("hud_render", ApoliDataTypes.HUD_RENDER, HudRender.DONT_RENDER)
+                        .add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null),
+                data -> (type, entity) -> new ActionOnBlockPower(type, entity, data.getInt("cooldown"), data.get("hud_render"), data.get("damage_condition"), data.get("bientity_action"), data.get("bientity_condition"))
+        ).allowCondition();
     }
 }

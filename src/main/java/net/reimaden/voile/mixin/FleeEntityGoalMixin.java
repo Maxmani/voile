@@ -1,6 +1,6 @@
 /*
  * This file is part of Voile, a library mod for Minecraft.
- * Copyright (C) 2023  Maxmani
+ * Copyright (C) 2023-2024  Maxmani
  *
  * Voile is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -41,7 +41,7 @@ public class FleeEntityGoalMixin {
         Predicate<LivingEntity> predicate = target -> {
             BehaviorHelper behaviorHelper = new BehaviorHelper(target, this.mob);
             if (behaviorHelper.checkEntity()) {
-                return behaviorHelper.neitherHostileNorPassive();
+                return behaviorHelper.neitherNeutralNorPassive();
             }
 
             return true;

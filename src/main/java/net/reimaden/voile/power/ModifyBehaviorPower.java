@@ -1,6 +1,6 @@
 /*
  * This file is part of Voile, a library mod for Minecraft.
- * Copyright (C) 2023  Maxmani
+ * Copyright (C) 2023-2024  Maxmani
  *
  * Voile is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,11 +18,16 @@
 
 package net.reimaden.voile.power;
 
+import io.github.apace100.apoli.data.ApoliDataTypes;
 import io.github.apace100.apoli.power.Power;
 import io.github.apace100.apoli.power.PowerType;
+import io.github.apace100.apoli.power.factory.PowerFactory;
+import io.github.apace100.calio.data.SerializableData;
+import io.github.apace100.calio.data.SerializableDataType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Pair;
+import net.reimaden.voile.Voile;
 
 import java.util.function.Predicate;
 
@@ -52,5 +57,16 @@ public class ModifyBehaviorPower extends Power {
         HOSTILE,
         NEUTRAL,
         PASSIVE
+    }
+
+    public static PowerFactory<Power> createFactory() {
+        return new PowerFactory<>(
+                Voile.id("modify_behavior"),
+                new SerializableData()
+                        .add("behavior", SerializableDataType.enumValue(ModifyBehaviorPower.EntityBehavior.class))
+                        .add("entity_condition", ApoliDataTypes.ENTITY_CONDITION, null)
+                        .add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null),
+                data -> (type, entity) -> new ModifyBehaviorPower(type, entity, data.get("behavior"), data.get("entity_condition"), data.get("bientity_condition"))
+        ).allowCondition();
     }
 }

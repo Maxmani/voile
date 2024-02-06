@@ -1,6 +1,6 @@
 /*
  * This file is part of Voile, a library mod for Minecraft.
- * Copyright (C) 2023  Maxmani
+ * Copyright (C) 2023-2024  Maxmani
  *
  * Voile is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,21 +16,24 @@
  * along with Voile.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.reimaden.voile.action;
+package net.reimaden.voile.action.entity;
 
 import io.github.apace100.apoli.component.PowerHolderComponent;
+import io.github.apace100.apoli.data.ApoliDataTypes;
 import io.github.apace100.apoli.power.CooldownPower;
 import io.github.apace100.apoli.power.Power;
 import io.github.apace100.apoli.power.PowerType;
 import io.github.apace100.apoli.power.VariableIntPower;
+import io.github.apace100.apoli.power.factory.action.ActionFactory;
 import io.github.apace100.apoli.util.ResourceOperation;
 import io.github.apace100.calio.data.SerializableData;
+import io.github.apace100.calio.data.SerializableDataType;
+import io.github.apace100.calio.data.SerializableDataTypes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectCategory;
-import org.jetbrains.annotations.ApiStatus;
+import net.reimaden.voile.Voile;
 
-@ApiStatus.Experimental
 public class ChangeResourceWithStatusEffectsAction {
 
     public static void action(SerializableData.Instance data, Entity entity) {
@@ -65,5 +68,17 @@ public class ChangeResourceWithStatusEffectsAction {
             }
             PowerHolderComponent.syncPower(entity, powerType);
         }
+    }
+
+    public static ActionFactory<Entity> getFactory() {
+        return new ActionFactory<>(
+                Voile.id("change_resource_with_status_effects"),
+                new SerializableData()
+                        .add("resource", ApoliDataTypes.POWER_TYPE)
+                        .add("category", SerializableDataType.enumValue(StatusEffectCategory.class))
+                        .add("change", SerializableDataTypes.INT, 1)
+                        .add("operation", ApoliDataTypes.RESOURCE_OPERATION, ResourceOperation.ADD),
+                ChangeResourceWithStatusEffectsAction::action
+        );
     }
 }

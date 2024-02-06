@@ -1,6 +1,6 @@
 /*
  * This file is part of Voile, a library mod for Minecraft.
- * Copyright (C) 2023  Maxmani
+ * Copyright (C) 2023-2024  Maxmani
  *
  * Voile is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,12 +18,15 @@
 
 package net.reimaden.voile.power;
 
+import io.github.apace100.apoli.power.Power;
 import io.github.apace100.apoli.power.PowerType;
+import io.github.apace100.apoli.power.factory.PowerFactory;
 import io.github.apace100.calio.data.SerializableData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.random.Random;
+import net.reimaden.voile.Voile;
 
 public class ModifyDeathSoundPower extends ModifySoundPower {
 
@@ -36,5 +39,13 @@ public class ModifyDeathSoundPower extends ModifySoundPower {
         Random random = entity instanceof LivingEntity living ? living.getRandom() : entity.getWorld().getRandom();
         entity.getWorld().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
                 soundEvent, entity.getSoundCategory(), volume, (random.nextFloat() - random.nextFloat()) * 0.2f + pitch);
+    }
+
+    public static PowerFactory<Power> createFactory() {
+        return new PowerFactory<>(
+                Voile.id("modify_death_sound"),
+                ModifySoundPower.getSerializableData(),
+                data -> (type, entity) -> new ModifyDeathSoundPower(type, entity, data)
+        ).allowCondition();
     }
 }

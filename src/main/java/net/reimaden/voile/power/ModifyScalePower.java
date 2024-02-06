@@ -1,6 +1,6 @@
 /*
  * This file is part of Voile, a library mod for Minecraft.
- * Copyright (C) 2023  Maxmani
+ * Copyright (C) 2023-2024  Maxmani
  *
  * Voile is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,8 +20,12 @@ package net.reimaden.voile.power;
 
 import io.github.apace100.apoli.power.Power;
 import io.github.apace100.apoli.power.PowerType;
+import io.github.apace100.apoli.power.factory.PowerFactory;
+import io.github.apace100.calio.data.SerializableData;
+import io.github.apace100.calio.data.SerializableDataTypes;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
+import net.reimaden.voile.Voile;
 import virtuoel.pehkui.api.ScaleData;
 import virtuoel.pehkui.api.ScaleRegistries;
 import virtuoel.pehkui.api.ScaleType;
@@ -34,7 +38,7 @@ import java.util.Set;
 
 public class ModifyScalePower extends Power {
 
-    public static final ArrayList<Identifier> DEFAULT_SCALE_TYPES = new ArrayList<>() {{
+    private static final ArrayList<Identifier> DEFAULT_SCALE_TYPES = new ArrayList<>() {{
         add(ScaleRegistries.getId(ScaleRegistries.SCALE_TYPES, ScaleTypes.WIDTH));
         add(ScaleRegistries.getId(ScaleRegistries.SCALE_TYPES, ScaleTypes.HEIGHT));
         add(ScaleRegistries.getId(ScaleRegistries.SCALE_TYPES, ScaleTypes.DROPS));
@@ -79,5 +83,15 @@ public class ModifyScalePower extends Power {
                 .filter(scaleType -> !this.scaleTypes.contains(scaleType))
                 .filter(scaleType -> !scaleType.getScaleData(entity).shouldPersist())
                 .forEach(scaleType -> scaleType.getScaleData(entity).resetScale());
+    }
+
+    public static PowerFactory<Power> createFactory() {
+        return new PowerFactory<>(
+                Voile.id("modify_scale"),
+                new SerializableData()
+                        .add("scale_types", SerializableDataTypes.IDENTIFIERS, DEFAULT_SCALE_TYPES)
+                        .add("scale", SerializableDataTypes.FLOAT),
+                data -> (type, entity) -> new ModifyScalePower(type, entity, data.get("scale_types"), data.getFloat("scale"))
+        ).allowCondition();
     }
 }

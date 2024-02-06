@@ -20,11 +20,22 @@ package net.reimaden.voile.power;
 
 import io.github.apace100.apoli.power.Power;
 import io.github.apace100.apoli.power.PowerType;
+import io.github.apace100.apoli.power.factory.PowerFactory;
+import io.github.apace100.calio.data.SerializableData;
 import net.minecraft.entity.LivingEntity;
+import net.reimaden.voile.Voile;
 
 public class DisableShieldsPower extends Power {
 
     public DisableShieldsPower(PowerType<?> type, LivingEntity entity) {
         super(type, entity);
+    }
+
+    public static PowerFactory<Power> createFactory() {
+        return new PowerFactory<>(
+                Voile.id("disable_shields"),
+                new SerializableData(),
+                data -> (type, entity) -> new DisableShieldsPower(type, entity)
+        ).allowCondition();
     }
 }

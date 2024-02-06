@@ -16,16 +16,18 @@
  * along with Voile.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.reimaden.voile.action;
+package net.reimaden.voile.action.entity;
 
+import io.github.apace100.apoli.power.factory.action.ActionFactory;
 import io.github.apace100.calio.data.SerializableData;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.reimaden.voile.Voile;
 
 public class DisableShieldAction {
 
-    public static void action(@SuppressWarnings("unused") SerializableData.Instance data, Entity entity) {
+    public static void action(SerializableData.Instance data, Entity entity) {
         if (entity == null) return;
 
         // Can only disable shields on players
@@ -35,5 +37,13 @@ public class DisableShieldAction {
         if (player.getActiveItem().isIn(ConventionalItemTags.SHIELDS)) {
             player.disableShield(true);
         }
+    }
+
+    public static ActionFactory<Entity> getFactory() {
+        return new ActionFactory<>(
+                Voile.id("disable_shield"),
+                new SerializableData(),
+                DisableShieldAction::action
+        );
     }
 }

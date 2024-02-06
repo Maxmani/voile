@@ -1,6 +1,6 @@
 /*
  * This file is part of Voile, a library mod for Minecraft.
- * Copyright (C) 2023  Maxmani
+ * Copyright (C) 2023-2024  Maxmani
  *
  * Voile is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,13 +18,18 @@
 
 package net.reimaden.voile.power;
 
+import io.github.apace100.apoli.data.ApoliDataTypes;
 import io.github.apace100.apoli.power.Power;
 import io.github.apace100.apoli.power.PowerType;
+import io.github.apace100.apoli.power.factory.PowerFactory;
+import io.github.apace100.calio.data.SerializableData;
+import io.github.apace100.calio.data.SerializableDataTypes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.util.Pair;
+import net.reimaden.voile.Voile;
 
 import java.util.function.Predicate;
 
@@ -54,5 +59,17 @@ public class ConvertEntityPower extends Power {
 
     public boolean ignoreDifficulty() {
         return this.ignoreDifficulty;
+    }
+
+    public static PowerFactory<Power> createFactory() {
+        return new PowerFactory<>(
+                Voile.id("convert_entity"),
+                new SerializableData()
+                        .add("entity_condition", ApoliDataTypes.ENTITY_CONDITION, null)
+                        .add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
+                        .add("convert_to", SerializableDataTypes.ENTITY_TYPE)
+                        .add("ignore_difficulty", SerializableDataTypes.BOOLEAN, true),
+                data -> (type, entity) -> new ConvertEntityPower(type, entity, data.get("entity_condition"), data.get("bientity_condition"), data.get("convert_to"), data.getBoolean("ignore_difficulty"))
+        ).allowCondition();
     }
 }

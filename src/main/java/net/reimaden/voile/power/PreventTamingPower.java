@@ -23,41 +23,42 @@ import io.github.apace100.apoli.power.Power;
 import io.github.apace100.apoli.power.PowerType;
 import io.github.apace100.apoli.power.factory.PowerFactory;
 import io.github.apace100.calio.data.SerializableData;
-import io.github.apace100.calio.data.SerializableDataTypes;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Pair;
-import net.minecraft.world.World;
 import net.reimaden.voile.Voile;
 
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class PreventItemSlowdownPower extends Power {
+public class PreventTamingPower extends Power {
 
-    private final Predicate<Pair<World, ItemStack>> itemCondition;
-    private final boolean canStartSprinting;
+    private final Consumer<Pair<Entity, Entity>> biEntityAction;
+    private final Predicate<Pair<Entity, Entity>> bientityCondition;
 
-    public PreventItemSlowdownPower(PowerType<?> type, LivingEntity entity, Predicate<Pair<World, ItemStack>> itemCondition, boolean canStartSprinting) {
+    public PreventTamingPower(PowerType<?> type, LivingEntity entity, Consumer<Pair<Entity, Entity>> biEntityAction, Predicate<Pair<Entity, Entity>> bientityCondition) {
         super(type, entity);
-        this.itemCondition = itemCondition;
-        this.canStartSprinting = canStartSprinting;
+        this.biEntityAction = biEntityAction;
+        this.bientityCondition = bientityCondition;
     }
 
-    public boolean doesPrevent(ItemStack stack) {
-        return itemCondition == null || itemCondition.test(new Pair<>(entity.getWorld(), stack));
+    public boolean doesApply(Entity other) {
+        return this.bientityCondition == null || this.bientityCondition.test(new Pair<>(this.entity, other));
     }
 
-    public boolean getCanStartSprinting() {
-        return this.canStartSprinting;
+    public void executeAction(Entity other) {
+        if (this.biEntityAction != null) {
+            this.biEntityAction.accept(new Pair<>(this.entity, other));
+        }
     }
 
     public static PowerFactory<Power> createFactory() {
         return new PowerFactory<>(
-                Voile.id("prevent_item_slowdown"),
+                Voile.id("prevent_taming"),
                 new SerializableData()
-                        .add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
-                        .add("can_start_sprinting", SerializableDataTypes.BOOLEAN, true),
-                data -> (type, entity) -> new PreventItemSlowdownPower(type, entity, data.get("item_condition"), data.getBoolean("can_start_sprinting"))
+                        .add("bientity_action", ApoliDataTypes.BIENTITY_ACTION, null)
+                        .add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null),
+                data -> (type, entity) -> new PreventTamingPower(type, entity, data.get("bientity_action"), data.get("bientity_condition"))
         ).allowCondition();
     }
 }

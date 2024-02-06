@@ -16,15 +16,20 @@
  * along with Voile.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.reimaden.voile.action;
+package net.reimaden.voile.action.entity;
 
+import io.github.apace100.apoli.power.factory.action.ActionFactory;
 import io.github.apace100.calio.data.SerializableData;
+import io.github.apace100.calio.data.SerializableDataType;
+import io.github.apace100.calio.data.SerializableDataTypes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.math.random.Random;
+import net.reimaden.voile.Voile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -67,5 +72,20 @@ public class ApplyRandomEffectAction {
                 ));
             }
         }
+    }
+
+    public static ActionFactory<Entity> getFactory() {
+        return new ActionFactory<>(
+                Voile.id("apply_random_effect"),
+                new SerializableData()
+                        .add("category", SerializableDataType.enumValue(StatusEffectCategory.class), null)
+                        .add("duration", SerializableDataTypes.INT, 100)
+                        .add("amplifier", SerializableDataTypes.INT, 0)
+                        .add("is_ambient", SerializableDataTypes.BOOLEAN, false)
+                        .add("show_particles", SerializableDataTypes.BOOLEAN, true)
+                        .add("show_icon", SerializableDataTypes.BOOLEAN, true)
+                        .add("filtered_effects", SerializableDataType.list(SerializableDataTypes.STATUS_EFFECT), null),
+                ApplyRandomEffectAction::action
+        );
     }
 }

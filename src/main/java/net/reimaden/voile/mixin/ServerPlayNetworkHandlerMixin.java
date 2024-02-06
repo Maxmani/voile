@@ -1,6 +1,6 @@
 /*
  * This file is part of Voile, a library mod for Minecraft.
- * Copyright (C) 2023-2024  Maxmani
+ * Copyright (C) 2024  Maxmani
  *
  * Voile is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,30 +18,28 @@
 
 package net.reimaden.voile.mixin;
 
-import net.minecraft.entity.ai.goal.EscapeDangerGoal;
-import net.minecraft.entity.mob.PathAwareEntity;
-import net.reimaden.voile.power.ModifyBehaviorPower;
-import net.reimaden.voile.util.BehaviorHelper;
-import org.spongepowered.asm.mixin.Final;
+import io.github.apace100.apoli.component.PowerHolderComponent;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.reimaden.voile.power.PreventFlyingKickPower;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(EscapeDangerGoal.class)
-public class EscapeDangerGoalMixin {
+@Mixin(ServerPlayNetworkHandler.class)
+public abstract class ServerPlayNetworkHandlerMixin {
 
-    @Shadow @Final protected PathAwareEntity mob;
+    @Shadow public abstract ServerPlayerEntity getPlayer();
+    @Shadow private int floatingTicks;
+    @Shadow private int vehicleFloatingTicks;
 
-    @Inject(method = "isInDanger", at = @At("HEAD"), cancellable = true)
-    private void voile$preventEscaping(CallbackInfoReturnable<Boolean> cir) {
-        BehaviorHelper behaviorHelper = new BehaviorHelper(this.mob.getAttacker(), this.mob);
-
-        if (behaviorHelper.checkEntity()) {
-            if (behaviorHelper.behaviorMatches(ModifyBehaviorPower.EntityBehavior.PASSIVE)) {
-                cir.setReturnValue(false);
-            }
+    @Inject(method = "tick", at = @At(value = "HEAD"))
+    private void voile$resetFloatingTicks(CallbackInfo ci) {
+        if (PowerHolderComponent.hasPower(this.getPlayer(), PreventFlyingKickPower.class)) {
+            this.floatingTicks = 0;
+            this.vehicleFloatingTicks = 0;
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of Voile, a library mod for Minecraft.
- * Copyright (C) 2023  Maxmani
+ * Copyright (C) 2023-2024  Maxmani
  *
  * Voile is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,11 +18,14 @@
 
 package net.reimaden.voile.power;
 
+import io.github.apace100.apoli.power.Power;
 import io.github.apace100.apoli.power.PowerType;
+import io.github.apace100.apoli.power.factory.PowerFactory;
 import io.github.apace100.calio.data.SerializableData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.sound.SoundEvent;
+import net.reimaden.voile.Voile;
 
 public class ModifyFootstepSoundPower extends ModifySoundPower {
 
@@ -34,5 +37,13 @@ public class ModifyFootstepSoundPower extends ModifySoundPower {
     protected void playSound(Entity entity, SoundEvent soundEvent, float volume, float pitch) {
         entity.getWorld().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
                 soundEvent, entity.getSoundCategory(), volume, pitch);
+    }
+
+    public static PowerFactory<Power> createFactory() {
+        return new PowerFactory<>(
+                Voile.id("modify_footstep_sound"),
+                ModifySoundPower.getSerializableData(),
+                data -> (type, entity) -> new ModifyFootstepSoundPower(type, entity, data)
+        ).allowCondition();
     }
 }
